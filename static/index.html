@@ -11,10 +11,12 @@
 <body>
     <h1>SE 3316 Lab 3 - Timetable</h1>
     <h2>Search</h2>
-    <div class="search">
+    <div class="search" id="search">
         <div>
             <p>Subject:</p>
-            <select name="subject" id="subjectInput"></select>
+            <select name="subject" id="subjectInput">
+                <option value="All Subjects">All Subjects</option>
+            </select>
         </div>
         <div>
             <p>Course:</p>
@@ -22,10 +24,14 @@
         </div>
         <div>
             <p>Component:</p>
-            <select name="component" id="componentInput"></select>
+            <select name="component" id="componentInput">
+                <option value="All">All</option>
+            </select>
         </div>
+        <br>
+        <button name="btn" id="btn" onclick="onSearch()">Search</button>
     </div>
-    <div class="output">
+    <div class="output" id="output">
 
     </div>
 </body>

@@ -1,11 +1,6 @@
 //dbromle2
 //lab3
 
-// const fs = require("fs"); //to read & parse the json file
-// //read & parse the json file
-// let rawdata = fs.readFileSync("Lab3-timetable-data.json");
-// const parsedJSON = JSON.parse(rawdata);
-
 //get the json file
 let requestURL = "Lab3-timetable-data.json";
 let request = new XMLHttpRequest();
