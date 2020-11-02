@@ -9,9 +9,9 @@ const router = express.Router();
 app.use('/', express.static('static'));
 
 //load the index.html page
-router.get("/", (req,res)=>{
-    res.json("Lab3-timetable-data.json", {root: __dirname});
-});
+// router.get("/", (req,res)=>{
+//     res.json("Lab3-timetable-data.json", {root: __dirname});
+// });
 
 app.use('/api', router); // Set the routes at '/api'
 

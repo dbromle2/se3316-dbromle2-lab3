@@ -2,16 +2,16 @@
 //lab3
 
 //get the json file
-let requestURL = "Lab3-timetable-data.json";
-let request = new XMLHttpRequest();
-request.open('GET', requestURL, true);
-request.responseType = "json";
-request.send();
+// let requestURL = "Lab3-timetable-data.json";
+// let request = new XMLHttpRequest();
+// request.open('GET', requestURL, true);
+// request.responseType = "json";
+// request.send();
 
-request.onload = function(){
-    const myResponse = request.response;
-    populateOptions(myResponse);
-}
+// request.onload = function(){
+//     const myResponse = request.response;
+//     populateOptions(myResponse);
+// }
 
 //Initiation function to load/populate the web page correctly
 function populateOptions(jsonObj){
