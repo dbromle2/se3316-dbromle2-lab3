@@ -144,8 +144,25 @@ app.put("/schedule/:name", (req,res)=>{
     res.send(schedule);
 });
 
+/*--------------- DELETEs ---------------*/
 
+//Step 7 Delete a schedule with a given name
+app.delete("/schedule/:name", (req,res)=>{
+    let name = req.params.name;
 
+    //throw error if the schedule name does not exist
+    let exists = sData.filter(s => s.name == name);
+    if(exists.length == 0) return res.status(400).send("Invalid schedule name");
+    
+    let schedule = sData.find(s => s.name == name);
+
+    sData.splice(sData.indexOf(schedule),1);
+
+    let newSchedule = JSON.stringify(sData);
+    fsfs.writeFileSync("./schedule.json", newSchedule);
+
+    res.send(schedule);
+})
 
 app.use('/api', router); // Set the routes at '/api'
 
