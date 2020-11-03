@@ -162,7 +162,16 @@ app.delete("/schedule/:name", (req,res)=>{
     fsfs.writeFileSync("./schedule.json", newSchedule);
 
     res.send(schedule);
-})
+});
+
+//Step 9 Delete all schedules
+app.delete("/schedule", (req,res)=>{
+    let myArr = [];
+    let newSchedule = JSON.stringify(myArr);
+    fsfs.writeFileSync("./schedule.json", newSchedule);
+
+    res.send(sData);
+});
 
 app.use('/api', router); // Set the routes at '/api'
 
