@@ -31,7 +31,7 @@ app.get("/courses", (req,res)=>{
 
 //Step 2 (10pts)
 app.get("/courses/:subject", (req,res)=>{
-    let s = req.params.subject;
+    let s = req.params.subject.toUpperCase();
     let myArr = [];
 
     const course = courses.filter(c => c.subject === s);
@@ -45,19 +45,39 @@ app.get("/courses/:subject", (req,res)=>{
 });
 
 //Step 3 (10pts)
+//No component specified
 app.get("/courses/:subject/:course", (req,res)=>{
-    let s = req.params.subject;
-    let cor = req.params.course;
+    let s = req.params.subject.toUpperCase();
+    let cor = req.params.course.toUpperCase();
     //let com = req.params.component;
     let myArr = [];
 
-    console.log(s + " " + cor + " ");
+    console.log(s + " " + cor + " "); //testing
 
-    const course = courses.filter((c => c.subject === s) && (c => c.catalog_nbr === cor) );
+    const course = courses.filter(c => (c.subject == s) && (c.catalog_nbr == cor));
     if(course.length == 0) res.status(404).send("This subject code doesn't exist.");
 
+    for(var i=0; i<course.length; i++){
+        myArr[i] = "Start time: " + course[i].course_info[0].start_time + " End time: " + course[i].course_info[0].end_time + " on " + course[i].course_info[0].days;
+    }
     
-    res.send(course);
+    res.send(myArr);
+});
+//Component specified
+app.get("/courses/:subject/:course/:component", (req,res)=>{
+    let s = req.params.subject.toUpperCase();
+    let cor = req.params.course.toUpperCase();
+    let com = req.params.component.toUpperCase();
+    let myArr = [];
+
+    const course = courses.filter(c => (c.subject == s) && (c.catalog_nbr == cor) && (c.course_info[0].ssr_component == com));
+    if(course.length == 0) res.status(404).send("A course in this configuration does not exist.");
+
+    for(var i=0; i<course.length; i++){
+        myArr[i] = "Start time: " + course[i].course_info[0].start_time + " End time: " + course[i].course_info[0].end_time + " on " + course[i].course_info[0].days;
+    }
+    
+    res.send(myArr);
 });
 
 app.use('/api', router); // Set the routes at '/api'
