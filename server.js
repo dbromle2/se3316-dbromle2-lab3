@@ -112,6 +112,25 @@ app.post("/schedule", (req,res)=>{
     res.send(schedule);
 });
 
+/*--------------- PUTs ---------------*/
+
+//Step 5 Save a list of subject code,course code pairs to the given schedule name
+app.put("/schedule/:name", (req,res)=>{
+    let name = req.params.name;
+
+    //throw error if the schedule name does not exist
+    let exists = sData.filter(s => s.name == name);
+    if(exists.length == 0) return res.status(400).send("Invalid schedule name");
+
+    let schedule = sData.find(s => s.name == name);
+    schedule.sCourses = req.body.sCourses;
+
+    let newSchedule = JSON.stringify(sData);
+    fs.writeFileSync("./schedule.json", newSchedule);
+
+    res.send(schedule);
+});
+
 
 app.use('/api', router); // Set the routes at '/api'
 
