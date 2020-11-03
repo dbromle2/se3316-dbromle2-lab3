@@ -88,6 +88,19 @@ app.get("/courses/:subject/:course/:component", (req,res)=>{
     res.send(myArr);
 });
 
+//Step 6 Get list of subject code,course code pairs for schedule
+app.get("/schedule/view/:name", (req,res)=>{
+    let name = req.params.name;
+    let myArr = [];
+
+    const schedule = sData.find(s => s.name == name);
+    
+    for(var i=0; i<schedule.sCourses.length; i++){
+        myArr[i] = schedule.sCourses[i];
+    }
+    res.send(myArr);
+});
+
 /*--------------- POSTs ---------------*/
 
 //Step 4 Create a new schedule
@@ -130,6 +143,8 @@ app.put("/schedule/:name", (req,res)=>{
 
     res.send(schedule);
 });
+
+
 
 
 app.use('/api', router); // Set the routes at '/api'
