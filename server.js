@@ -2,23 +2,31 @@
 //se3316 lab3
 
 const express = require("express");
-const data = require("./static/Lab3-timetable-data.json");
 const app = express();
 const fs = require("fs");
+const fsfs = require("fs");
 const router = express.Router();
 
 let rawdata = fs.readFileSync("./static/Lab3-timetable-data.json");
 let courses = JSON.parse(rawdata);
 
+let rawScheduleData = fsfs.readFileSync("./schedule.json");
+let sData = JSON.parse(rawScheduleData);
+
 // serve files in static' folder at root URL '/'
 app.use('/', express.static('static'));
+
+//allow for parsing json for POSTs
+app.use(express.json());
 
 //load the index.html page
 router.get("/", (req,res)=>{
     res.sendFile("index.html", {root: __dirname});
 });
 
-//Step 1 (15pts)
+/*--------------- GETs ---------------*/
+
+//Step 1 Get all subjects and descriptions
 app.get("/courses", (req,res)=>{
     let myArr = [];
 
@@ -29,7 +37,7 @@ app.get("/courses", (req,res)=>{
     res.send(myArr);
 });
 
-//Step 2 (10pts)
+//Step 2 Get all course codes for a given subject code
 app.get("/courses/:subject", (req,res)=>{
     let s = req.params.subject.toUpperCase();
     let myArr = [];
@@ -44,7 +52,7 @@ app.get("/courses/:subject", (req,res)=>{
     res.send(myArr);
 });
 
-//Step 3 (10pts)
+//Step 3 Get timetable entry for a given subject code, course code, and optional component
 //No component specified
 app.get("/courses/:subject/:course", (req,res)=>{
     let s = req.params.subject.toUpperCase();
@@ -79,6 +87,31 @@ app.get("/courses/:subject/:course/:component", (req,res)=>{
     
     res.send(myArr);
 });
+
+/*--------------- POSTs ---------------*/
+
+//Step 4 Create a new schedule
+app.post("/schedule", (req,res)=>{
+    let name = req.body.name;
+
+    //throw error if it already exists
+    let exists = sData.filter(s => s.name == name);
+    if(exists.length != 0) return res.status(400).send("This name already exists");
+    
+    const schedule = {
+        name: name,
+        sCourses: []
+    };
+
+    console.log(name);
+
+    sData.push(schedule);
+    let newSchedule = JSON.stringify(sData);
+    fs.writeFileSync("./schedule.json", newSchedule);
+
+    res.send(schedule);
+});
+
 
 app.use('/api', router); // Set the routes at '/api'
 
