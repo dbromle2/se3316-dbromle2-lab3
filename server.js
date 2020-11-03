@@ -101,6 +101,17 @@ app.get("/schedule/view/:name", (req,res)=>{
     res.send(myArr);
 });
 
+//Step 8 Get list of schedule names and number of courses in each
+app.get("/schedule/view", (req,res)=>{
+    let myArr = [];
+
+    for(var i=0; i<sData.length; i++){
+        myArr[i] = "Name: " + sData[i].name + " Number of courses: " + sData[i].sCourses.length;
+    }
+
+    res.send(myArr);
+});
+
 /*--------------- POSTs ---------------*/
 
 //Step 4 Create a new schedule
