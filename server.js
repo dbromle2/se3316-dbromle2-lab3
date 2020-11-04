@@ -39,66 +39,105 @@ app.get("/courses", (req,res)=>{
 
 //Step 2 Get all course codes for a given subject code
 app.get("/courses/:subject", (req,res)=>{
-    let s = req.params.subject.toUpperCase();
+    let sInvalid = req.params.subject;
     let myArr = [];
 
-    const course = courses.filter(c => c.subject === s);
-    if(course.length == 0) res.status(404).send("This subject code doesn't exist.");
+    //Input validation (code from lab 1)
+    let alpha = /^[a-zA-Z]*$/;
+    let validate = alpha.exec(sInvalid); //validate the string
+    let isStringValid = Boolean(validate);
+    let s = validate;
+  
+    if(isStringValid){
+        const course = courses.filter(c => c.subject == s);
+        if(course.length == 0) res.status(404).send("This subject code doesn't exist.");
 
-    for(var i=0; i<course.length; i++){
-        myArr[i] = course[i].catalog_nbr;
-    }
+        for(var i=0; i<course.length; i++){
+            myArr[i] = course[i].catalog_nbr;
+        }
 
-    res.send(myArr);
+        res.send(myArr);
+    } else res.status(400).send("Invalid input.");
 });
 
 //Step 3 Get timetable entry for a given subject code, course code, and optional component
 //No component specified
 app.get("/courses/:subject/:course", (req,res)=>{
-    let s = req.params.subject.toUpperCase();
-    let cor = req.params.course.toUpperCase();
-    //let com = req.params.component;
+    let sInvalid = req.params.subject;
+    let corInvalid = req.params.course;
     let myArr = [];
+
+    //Input validation (code from lab 1)
+    let alpha = /^[0-9a-zA-Z]*$/;
+    let validate = alpha.exec(sInvalid); //validate the string
+    let validate1 = alpha.exec(corInvalid);
+    let isStringValid = Boolean(validate && validate1);
+    let s = validate;
+    let cor = validate1;
 
     console.log(s + " " + cor + " "); //testing
 
-    const course = courses.filter(c => (c.subject == s) && (c.catalog_nbr == cor));
-    if(course.length == 0) res.status(404).send("This subject code doesn't exist.");
+    if(isStringValid){
+        const course = courses.filter(c => (c.subject == s) && (c.catalog_nbr == cor));
+        if(course.length == 0) res.status(404).send("This subject code doesn't exist.");
 
-    for(var i=0; i<course.length; i++){
-        myArr[i] = "Start time: " + course[i].course_info[0].start_time + " End time: " + course[i].course_info[0].end_time + " on " + course[i].course_info[0].days;
-    }
-    
-    res.send(myArr);
+        for(var i=0; i<course.length; i++){
+            myArr[i] = "Start time: " + course[i].course_info[0].start_time + " End time: " + course[i].course_info[0].end_time + " on " + course[i].course_info[0].days;
+        }
+        
+        res.send(myArr);
+    } else res.status(400).send("Invalid input(s).");
 });
 //Component specified
 app.get("/courses/:subject/:course/:component", (req,res)=>{
-    let s = req.params.subject.toUpperCase();
-    let cor = req.params.course.toUpperCase();
-    let com = req.params.component.toUpperCase();
+    let sInvalid = req.params.subject.toUpperCase();
+    let corInvalid = req.params.course.toUpperCase();
+    let comInvalid = req.params.component.toUpperCase();
     let myArr = [];
 
-    const course = courses.filter(c => (c.subject == s) && (c.catalog_nbr == cor) && (c.course_info[0].ssr_component == com));
-    if(course.length == 0) res.status(404).send("A course in this configuration does not exist.");
+    //Input validation (code from lab 1)
+    let alpha = /^[0-9a-zA-Z]*$/;
+    let validate = alpha.exec(sInvalid); //validate the string
+    let validate1 = alpha.exec(corInvalid);
+    let validate2 = alpha.exec(comInvalid);
+    let isStringValid = Boolean(validate && validate1 && validate2);
+    let s = validate;
+    let cor = validate1;
+    let com = validate2;
 
-    for(var i=0; i<course.length; i++){
-        myArr[i] = "Start time: " + course[i].course_info[0].start_time + " End time: " + course[i].course_info[0].end_time + " on " + course[i].course_info[0].days;
-    }
-    
-    res.send(myArr);
+    console.log(s + " " + cor + " " + com + " "); //testing
+
+    if(isStringValid){
+        const course = courses.filter(c => (c.subject == s) && (c.catalog_nbr == cor) && (c.course_info[0].ssr_component == com));
+        if(course.length == 0) res.status(404).send("A course in this configuration does not exist.");
+
+        for(var i=0; i<course.length; i++){
+            myArr[i] = "Start time: " + course[i].course_info[0].start_time + " End time: " + course[i].course_info[0].end_time + " on " + course[i].course_info[0].days;
+        }
+        
+        res.send(myArr);
+    } else res.status(400).send("Invalid input(s).");
 });
 
 //Step 6 Get list of subject code,course code pairs for schedule
 app.get("/schedule/view/:name", (req,res)=>{
-    let name = req.params.name;
+    let nameInvalid = req.params.name;
     let myArr = [];
 
-    const schedule = sData.find(s => s.name == name);
-    
-    for(var i=0; i<schedule.sCourses.length; i++){
-        myArr[i] = schedule.sCourses[i];
-    }
-    res.send(myArr);
+    //Input validation (code from lab 1)
+    let alpha = /^[a-zA-Z]*$/;
+    let validate = alpha.exec(nameInvalid); //validate the string
+    let isStringValid = Boolean(validate);
+    let name = validate;
+
+    if(isStringValid){
+        const schedule = sData.find(s => s.name == name);
+        
+        for(var i=0; i<schedule.sCourses.length; i++){
+            myArr[i] = schedule.sCourses[i];
+        }
+        res.send(myArr);
+    } else res.status(400).send("Invalid input.");
 });
 
 //Step 8 Get list of schedule names and number of courses in each
@@ -116,63 +155,90 @@ app.get("/schedule/view", (req,res)=>{
 
 //Step 4 Create a new schedule
 app.post("/schedule", (req,res)=>{
-    let name = req.body.name;
+    let nameInvalid = req.body.name;
 
-    //throw error if it already exists
-    let exists = sData.filter(s => s.name == name);
-    if(exists.length != 0) return res.status(400).send("This name already exists");
-    
-    const schedule = {
-        name: name,
-        sCourses: []
-    };
+    //Input validation (code from lab 1)
+    let alpha = /^[0-9a-zA-Z]*$/;
+    let validate = alpha.exec(nameInvalid); //validate the string
+    let isStringValid = Boolean(validate);
+    let name = validate[0];
 
-    console.log(name);
+    if(isStringValid){
+        //throw error if it already exists
+        let exists = sData.filter(s => s.name == name);
+        if(exists.length != 0) return res.status(400).send("This name already exists");
+        
+        const schedule = {
+            name: name,
+            sCourses: []
+        };
 
-    sData.push(schedule);
-    let newSchedule = JSON.stringify(sData);
-    fs.writeFileSync("./schedule.json", newSchedule);
+        console.log(name);
 
-    res.send(schedule);
+        sData.push(schedule);
+        let newSchedule = JSON.stringify(sData);
+        fs.writeFileSync("./schedule.json", newSchedule);
+
+        res.send(schedule);
+    } else res.status(400).send("Invalid input.");
 });
 
 /*--------------- PUTs ---------------*/
 
 //Step 5 Save a list of subject code,course code pairs to the given schedule name
 app.put("/schedule/:name", (req,res)=>{
-    let name = req.params.name;
+    let nameInvalid = req.params.name;
+    let sCoursesInvalid = req.body.sCourses;
 
-    //throw error if the schedule name does not exist
-    let exists = sData.filter(s => s.name == name);
-    if(exists.length == 0) return res.status(400).send("Invalid schedule name");
+    //Input validation (code from lab 1)
+    let alpha = /^[0-9a-zA-Z\[\]\,]*$/;
+    let validate = alpha.exec(nameInvalid); //validate the string
+    let validate1 = alpha.exec(sCoursesInvalid);
+    let isStringValid = Boolean(validate && validate1);
+    let name = validate[0];
+    let sCourses = validate1;
 
-    let schedule = sData.find(s => s.name == name);
-    schedule.sCourses = req.body.sCourses;
+    if(isStringValid){
+        //throw error if the schedule name does not exist
+        let exists = sData.filter(s => s.name == name);
+        if(exists.length == 0) return res.status(400).send("Invalid schedule name");
 
-    let newSchedule = JSON.stringify(sData);
-    fs.writeFileSync("./schedule.json", newSchedule);
+        let schedule = sData.find(s => s.name == name);
+        schedule.sCourses = sCourses;
 
-    res.send(schedule);
+        let newSchedule = JSON.stringify(sData);
+        fs.writeFileSync("./schedule.json", newSchedule);
+
+        res.send(schedule);
+    } else res.status(400).send("Invalid input.");
 });
 
 /*--------------- DELETEs ---------------*/
 
 //Step 7 Delete a schedule with a given name
 app.delete("/schedule/:name", (req,res)=>{
-    let name = req.params.name;
+    let nameInvalid = req.params.name;
 
-    //throw error if the schedule name does not exist
-    let exists = sData.filter(s => s.name == name);
-    if(exists.length == 0) return res.status(400).send("Invalid schedule name");
-    
-    let schedule = sData.find(s => s.name == name);
+    //Input validation (code from lab 1)
+    let alpha = /^[0-9a-zA-Z]*$/;
+    let validate = alpha.exec(nameInvalid); //validate the string
+    let isStringValid = Boolean(validate);
+    let name = validate[0];
 
-    sData.splice(sData.indexOf(schedule),1);
+    if(isStringValid){
+        //throw error if the schedule name does not exist
+        let exists = sData.filter(s => s.name == name);
+        if(exists.length == 0) return res.status(400).send("Invalid schedule name");
+        
+        let schedule = sData.find(s => s.name == name);
 
-    let newSchedule = JSON.stringify(sData);
-    fsfs.writeFileSync("./schedule.json", newSchedule);
+        sData.splice(sData.indexOf(schedule),1);
 
-    res.send(schedule);
+        let newSchedule = JSON.stringify(sData);
+        fsfs.writeFileSync("./schedule.json", newSchedule);
+
+        res.send(schedule);
+    } else res.status(400).send("Invalid input.");
 });
 
 //Step 9 Delete all schedules
