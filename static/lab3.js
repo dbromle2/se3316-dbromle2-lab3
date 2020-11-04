@@ -26,16 +26,25 @@ function onSearch(){
     let request = new XMLHttpRequest();
 
 
-    if(subSel == "All Subjects" && corSel == "" && comSel == "All"){
-        //Default entries, Step 1 Get all subjects and descriptions
+    if(subSel == "All Subjects" && corSel == "" && comSel == "All"){//Default entries; Step 1 Get all subjects and descriptions
+
         request.open("GET", "/courses", true);
         request.responseType = "json";
         request.send();
-    } else if(subSel != "All Subjects" && corSel == ""){
-        //Only subject code specified, Step 2 Get all course codes for a given subject code
+    } else if(subSel != "All Subjects" && corSel == ""){//Only subject code specified; Step 2 Get all course codes for a given subject code
         request.open("GET", "/courses/"+subSel, true);
         request.responseType = "json";
         request.send();
+    } else if(subSel != "All Subjects" && corSel != ""){//subject code and course code specified; Step 3 Get timetable entry for a given subject code, course code, and optional component
+        if(comSel != "All"){//Component specified
+            request.open("GET", "/courses/"+subSel+"/"+corSel+"/"+comSel, true);
+            request.responseType = "json";
+            request.send();
+        } else {//No component specified
+            request.open("GET", "/courses/"+subSel+"/"+corSel, true);
+            request.responseType = "json";
+            request.send();
+        }
     }
 
     request.onload = function(){
@@ -55,26 +64,34 @@ function populateOuts(jsonObj){
         outList.removeChild(outList.firstChild);
     }
 
+    //throw an error if search parameters are bad
     flavourText.innerHTML = ("Search results: ");
-    for (var i=0; i<myCourse.length; i++){
-        //Populate the Subject Select fields
-        let courseLi = document.createElement("li");
-        
-        courseLi.innerHTML = myCourse[i];
+    if(myCourse == null){
+        let errorText = document.createElement("div");
+        let t = document.createTextNode("Error: invalid search parameters");
+        errorText.appendChild(t);
+        outList.appendChild(errorText);
+    } else {
+        for (var i=0; i<myCourse.length; i++){
+            //Populate the Subject Select fields
+            let courseLi = document.createElement("li");
+            
+            courseLi.innerHTML = myCourse[i];
 
-        outList.appendChild(courseLi);
+            outList.appendChild(courseLi);
 
-        // //Populate the Component Select fields
-        // if (componentArr.includes(myCourse[i].course_info[0].ssr_component)){
-        //     //yes it's jank but it works shut up
-        // } else {
-        //     let componentOption = document.createElement("option");
+            // //Populate the Component Select fields
+            // if (componentArr.includes(myCourse[i].course_info[0].ssr_component)){
+            //     //yes it's jank but it works shut up
+            // } else {
+            //     let componentOption = document.createElement("option");
 
-        //     componentArr[i] = myCourse[i].course_info[0].ssr_component;
-        //     componentOption.text = myCourse[i].course_info[0].ssr_component;
+            //     componentArr[i] = myCourse[i].course_info[0].ssr_component;
+            //     componentOption.text = myCourse[i].course_info[0].ssr_component;
 
-        //     componentSelect.add(componentOption);
-        // }
+            //     componentSelect.add(componentOption);
+            // }
+        }
     }
 }
 
