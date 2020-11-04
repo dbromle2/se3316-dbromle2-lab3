@@ -1,18 +1,8 @@
 //dbromle2
 //lab3
 
-//get the json file
-// let requestURL = "Lab3-timetable-data.json";
-// let request = new XMLHttpRequest();
-// request.open('GET', requestURL, true);
-// request.responseType = "json";
-// request.send();
-
-// request.onload = function(){
-//     const myResponse = request.response;
-//     populateOptions(myResponse);
-// }
-
+/*This function is called when the search button is clicked.
+It takes the values of the Subject, Course, and Component fields and sends them to the server*/
 function onSearch(){
     let subSelIn = document.getElementById("subjectInput");
     let corSelIn = document.getElementById("catalogInput");
@@ -79,18 +69,6 @@ function populateOuts(jsonObj){
             courseLi.innerHTML = myCourse[i];
 
             outList.appendChild(courseLi);
-
-            // //Populate the Component Select fields
-            // if (componentArr.includes(myCourse[i].course_info[0].ssr_component)){
-            //     //yes it's jank but it works shut up
-            // } else {
-            //     let componentOption = document.createElement("option");
-
-            //     componentArr[i] = myCourse[i].course_info[0].ssr_component;
-            //     componentOption.text = myCourse[i].course_info[0].ssr_component;
-
-            //     componentSelect.add(componentOption);
-            // }
         }
     }
 }
