@@ -43,6 +43,62 @@ function onSearch(){
     }
 }
 
+function onCreate(){//Not working properly, unsure why
+    let sNameInInvalid = document.getElementById("sName");
+
+    let request = new XMLHttpRequest();
+
+    //Input validation (code from lab 1)
+    let alpha = /^[0-9a-zA-Z\w\s]*$/;
+    let validate = alpha.exec(sNameInInvalid.value); //validate the string
+    let isStringValid = Boolean(validate);
+    let sName = validate[0];
+
+    console.log(sName);
+
+    if(isStringValid){
+        request.open("POST", "/schedule", true);
+        //request.responseType = "json";
+        request.send('"name: "'+sName+'"');
+    }
+
+    request.onload = function(){
+        const myResponse = request.response;
+        console.log(myResponse);
+    }
+}
+
+function onShowSchedules(){
+    let sNameInInvalid = document.getElementById("sName");
+
+    let request = new XMLHttpRequest();
+
+    //Input validation (code from lab 1)
+    let alpha = /^[0-9a-zA-Z\w\s]*$/;
+    let validate = alpha.exec(sNameInInvalid.value); //validate the string
+    let isStringValid = Boolean(validate);
+    let sName = validate[0];
+
+    console.log(sName);
+
+    if(isStringValid){
+        if(sName ==""){//Step 8 Get list of schedule names and number of courses in each
+            request.open("GET", "/schedule/view", true);
+            request.responseType = "json";
+            request.send();
+        } else {//Step 6 Get list of subject code,course code pairs for schedule
+            request.open("GET","/schedule/view/"+sName, true);
+            request.responseType = "json";
+            request.send();
+        }
+    }
+
+    request.onload = function(){
+        const myResponse = request.response;
+        populateOuts(myResponse);
+    }
+}
+
 //Function to populate the outputs
 function populateOuts(jsonObj){
     let outList = document.getElementById("outList");

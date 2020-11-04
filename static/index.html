@@ -10,7 +10,13 @@
 </head>
 <body>
     <h1>SE 3316 Lab 3 - Timetable</h1>
-    <h2>Search</h2>
+    <h2>Create a schedule</h2>
+    <div>
+        <input type="text" name="sName" id="sName" placeholder="Name the schedule">
+        <button name="btnCreate" id="btnCreate" onclick="onCreate()">Create</button>
+        <button name="btnShowSchedules" id="btnShowSchedules" onclick="onShowSchedules()">Show schedules</button>
+    </div>
+    <h2>Search the timetable</h2>
     <div class="search" id="search">
         <div>
             <p>Subject:</p>
@@ -121,7 +127,7 @@
             </select>
         </div>
         <br>
-        <button name="btn" id="btn" onclick="onSearch()">Search</button>
+        <button name="btnSearch" id="btnSearch" onclick="onSearch()">Search</button>
     </div>
     <div class="output" id="output">
         <div>

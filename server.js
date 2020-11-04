@@ -125,7 +125,7 @@ app.get("/schedule/view/:name", (req,res)=>{
     let myArr = [];
 
     //Input validation (code from lab 1)
-    let alpha = /^[a-zA-Z]*$/;
+    let alpha = /^[0-9a-zA-Z\w\s]*$/;
     let validate = alpha.exec(nameInvalid); //validate the string
     let isStringValid = Boolean(validate);
     let name = validate;
@@ -158,7 +158,7 @@ app.post("/schedule", (req,res)=>{
     let nameInvalid = req.body.name;
 
     //Input validation (code from lab 1)
-    let alpha = /^[0-9a-zA-Z]*$/;
+    let alpha = /^[0-9a-zA-Z\w\s]*$/;
     let validate = alpha.exec(nameInvalid); //validate the string
     let isStringValid = Boolean(validate);
     let name = validate[0];
@@ -189,14 +189,24 @@ app.post("/schedule", (req,res)=>{
 app.put("/schedule/:name", (req,res)=>{
     let nameInvalid = req.params.name;
     let sCoursesInvalid = req.body.sCourses;
+    console.log(sCoursesInvalid.length);
 
     //Input validation (code from lab 1)
-    let alpha = /^[0-9a-zA-Z\[\]\,]*$/;
+    let alpha = /^[0-9a-zA-Z\w\s\[\]\,\"]*$/;
     let validate = alpha.exec(nameInvalid); //validate the string
-    let validate1 = alpha.exec(sCoursesInvalid);
-    let isStringValid = Boolean(validate && validate1);
+    //let validate1 = alpha.exec(sCoursesInvalid);
+    let myArr = [];
+    let sCourses = [];
+    for(var i=0; i<sCoursesInvalid.length; i++){
+        let validate1 = alpha.exec(sCoursesInvalid[i]);
+        myArr[i] = validate1;
+    }
+    let isStringValid = Boolean(validate);
     let name = validate[0];
-    let sCourses = validate1;
+
+    // for(var i=0; i<myArr.length; i++){
+    //     sCourses[i] = myArr[i];
+    // }
 
     if(isStringValid){
         //throw error if the schedule name does not exist
@@ -204,7 +214,11 @@ app.put("/schedule/:name", (req,res)=>{
         if(exists.length == 0) return res.status(400).send("Invalid schedule name");
 
         let schedule = sData.find(s => s.name == name);
-        schedule.sCourses = sCourses;
+        //schedule.sCourses = sCourses;
+        console.log(sCourses.length);
+        for(var i=0;i<sCourses.length; i++){
+            schedule.sCourses[i] = sCourses[i];
+        }
 
         let newSchedule = JSON.stringify(sData);
         fs.writeFileSync("./schedule.json", newSchedule);
@@ -220,7 +234,7 @@ app.delete("/schedule/:name", (req,res)=>{
     let nameInvalid = req.params.name;
 
     //Input validation (code from lab 1)
-    let alpha = /^[0-9a-zA-Z]*$/;
+    let alpha = /^[0-9a-zA-Z\w\s]*$/;
     let validate = alpha.exec(nameInvalid); //validate the string
     let isStringValid = Boolean(validate);
     let name = validate[0];
